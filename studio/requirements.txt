@@ -1,0 +1,6 @@
+gradio>=4.0
+requests
+faster-whisper
+sounddevice
+numpy
+torch; sys_platform == 'linux'
