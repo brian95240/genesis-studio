@@ -309,8 +309,8 @@ def toggle_mute():
     return status
 
 def launch():
-    with gr.Blocks(title="Vertex Genesis v1.1.1", theme=gr.themes.Monochrome()) as demo:
-        gr.Markdown("# 🧬 Vertex Genesis v1.1.1 - Universal Connection Framework")
+    with gr.Blocks(title="Vertex Genesis v1.2.0", theme=gr.themes.Monochrome()) as demo:
+        gr.Markdown("# 🧬 Vertex Genesis v1.2.0 - Ghost Mode Evolution")
         
         with gr.Tabs():
             # CREATE TAB
@@ -595,12 +595,126 @@ def launch():
                 health_out = gr.JSON(label="Health Status")
                 health_btn.click(lambda: requests.get(f"{ORCHESTRATOR}/health").json(), outputs=health_out)
             
+            # GHOST MODE TAB
+            with gr.Tab("👻 Ghost Mode"):
+                gr.Markdown("### 👻 Ghost Mode - Voice-Activated Agent System")
+                gr.Markdown("Ambient wake-word detection, voice commands, and autonomous agent operation.")
+                
+                with gr.Row():
+                    with gr.Column():
+                        gr.Markdown("#### Control Panel")
+                        ghost_activate_btn = gr.Button("👻 Activate Ghost Mode", variant="primary")
+                        ghost_deactivate_btn = gr.Button("🚫 Deactivate Ghost Mode", variant="secondary")
+                        ghost_status_btn = gr.Button("📊 Check Status")
+                        
+                        ghost_status_out = gr.JSON(label="Ghost Mode Status")
+                        ghost_message_out = gr.Textbox(label="Message", interactive=False)
+                        
+                        def activate_ghost():
+                            try:
+                                resp = requests.post(f"{ORCHESTRATOR}/v1/ghost/activate")
+                                return resp.json(), resp.json().get("message", "Activated")
+                            except Exception as e:
+                                return {"error": str(e)}, f"Error: {e}"
+                        
+                        def deactivate_ghost():
+                            try:
+                                resp = requests.post(f"{ORCHESTRATOR}/v1/ghost/deactivate")
+                                return resp.json(), resp.json().get("message", "Deactivated")
+                            except Exception as e:
+                                return {"error": str(e)}, f"Error: {e}"
+                        
+                        def get_ghost_status():
+                            try:
+                                resp = requests.get(f"{ORCHESTRATOR}/v1/ghost/status")
+                                return resp.json()
+                            except Exception as e:
+                                return {"error": str(e)}
+                        
+                        ghost_activate_btn.click(activate_ghost, outputs=[ghost_status_out, ghost_message_out])
+                        ghost_deactivate_btn.click(deactivate_ghost, outputs=[ghost_status_out, ghost_message_out])
+                        ghost_status_btn.click(get_ghost_status, outputs=ghost_status_out)
+                    
+                    with gr.Column():
+                        gr.Markdown("#### Seat Router")
+                        gr.Markdown("Vector-driven model assignment to seats based on task description.")
+                        
+                        seat_id_input = gr.Slider(0, 4, step=1, value=0, label="Seat ID")
+                        task_desc_input = gr.Textbox(label="Task Description", placeholder="e.g., build async parser in Rust")
+                        seat_assign_btn = gr.Button("🪑 Assign Model to Seat")
+                        seat_status_btn = gr.Button("📊 View All Seats")
+                        
+                        seat_result_out = gr.JSON(label="Assignment Result")
+                        
+                        def assign_seat(seat_id, task_desc):
+                            try:
+                                resp = requests.post(f"{ORCHESTRATOR}/v1/seats/assign", json={
+                                    "seat_id": int(seat_id),
+                                    "task_description": task_desc
+                                })
+                                return resp.json()
+                            except Exception as e:
+                                return {"error": str(e)}
+                        
+                        def get_seats_status():
+                            try:
+                                resp = requests.get(f"{ORCHESTRATOR}/v1/seats/status")
+                                return resp.json()
+                            except Exception as e:
+                                return {"error": str(e)}
+                        
+                        seat_assign_btn.click(assign_seat, inputs=[seat_id_input, task_desc_input], outputs=seat_result_out)
+                        seat_status_btn.click(get_seats_status, outputs=seat_result_out)
+                
+                gr.Markdown("---")
+                gr.Markdown("### Model Discovery")
+                
+                with gr.Row():
+                    discovery_scan_btn = gr.Button("🔍 Scan for Models")
+                    discovery_pricing_btn = gr.Button("💰 Check Pricing")
+                    discovery_optimal_btn = gr.Button("✨ Get Optimal Config")
+                
+                task_type_input = gr.Dropdown(["general", "code", "vision"], value="general", label="Task Type")
+                discovery_out = gr.JSON(label="Discovery Results")
+                
+                def scan_models():
+                    try:
+                        resp = requests.post(f"{ORCHESTRATOR}/v1/discovery/scan?force=true")
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                def get_pricing():
+                    try:
+                        resp = requests.get(f"{ORCHESTRATOR}/v1/discovery/pricing")
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                def get_optimal(task_type):
+                    try:
+                        resp = requests.get(f"{ORCHESTRATOR}/v1/discovery/optimal?task_type={task_type}")
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                discovery_scan_btn.click(scan_models, outputs=discovery_out)
+                discovery_pricing_btn.click(get_pricing, outputs=discovery_out)
+                discovery_optimal_btn.click(get_optimal, inputs=task_type_input, outputs=discovery_out)
+            
             # ABOUT TAB
             with gr.Tab("ℹ️ About"):
                 gr.Markdown("""
-                ## Vertex Genesis v1.1.1 - Universal Connection Framework
+                ## Vertex Genesis v1.2.0 - Ghost Mode Evolution
                 
-                ### 🌟 New in v1.1.1
+                ### 🌟 New in v1.2.0
+                - **👻 Ghost Mode**: Voice-activated agent system with ambient wake-word detection
+                - **🪑 Seat Router**: Vector-driven model assignment using embeddings
+                - **🔍 Model Discovery**: Universal model hunting with spot pricing
+                - **🧠 Lazy Loading**: On-demand OCR, voice, and model loading
+                - **♻️ Auto-Collapse**: Components unload automatically when idle
+                
+                ### 🎉 Inherited from v1.1.1
                 - **Universal Connection Library**: Three symbiotic libraries (API, Webhook, MCP)
                 - **Voice-Commanded Connections**: Add any service via voice with AI confirmation
                 - **Future-Proof Architecture**: Connect to ANY AI model, tool, or platform
@@ -655,7 +769,9 @@ def launch():
                 - [Genesis Studio](https://github.com/brian95240/genesis-studio)
                 
                 ### Version History
-                - **v1.1.1**: Universal Connection Framework
+                - **v1.2.0**: Ghost Mode Evolution (Seat Router, Model Discovery, Voice Activation)
+                - **v1.1.1**: Universal Connection Framework (API/Webhook/MCP Libraries)
+                - **v1.1.0**: Security Vault Integration (Vaultwarden + 2FAuth)
                 - **v1.0.1**: Hyper-Dynamic capabilities
                 - **v1.0.0**: Golden Master release
                 """)
@@ -663,6 +779,6 @@ def launch():
     demo.queue().launch(server_port=int(os.getenv("STUDIO_PORT", "7860")))
 
 if __name__ == "__main__":
-    print("[GENESIS STUDIO v1.1.1] Starting Universal Connection Framework...")
+    print("[GENESIS STUDIO v1.2.0] Starting Ghost Mode Evolution...")
     print(f"[INFO] Orchestrator: {ORCHESTRATOR}")
     launch()
