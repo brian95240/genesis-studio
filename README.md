@@ -1,37 +1,32 @@
 # Genesis Studio
 
-Voice-guided AI project creation studio with hyper-dynamic capabilities.
+Voice-guided AI project creation studio with universal connection management.
 
-## 🚀 Features (v1.0.1)
+## 🚀 Features (v1.1.0 - Universal)
+
+### Universal Connection Management
+- **🎤 Voice-Commanded Connections**: Add any service via voice with AI confirmation
+  - Simply describe what you want to connect
+  - AI parses your command and confirms details
+  - Automatic spelling and URL validation
+  
+- **🔌 Three Connection Libraries**:
+  - **API Connections**: Any AI model or API service
+  - **Webhooks**: Event-driven integrations (Zapier, n8n, etc.)
+  - **MCP Servers**: Model Context Protocol integrations
 
 ### Core Capabilities
 - **Voice Interaction**: Real-time voice input with Faster-Whisper
 - **Agentic Architecture**: Multi-agent workflow (Architect + Engineer)
-- **Memory Integration**: Seamless integration with Universal Living Memory orchestrator
-- **Interrupt Capability**: Voice-based interruption of running processes
-- **Gradio Interface**: Clean, modern UI for project creation
-
-### v1.0.1 Enhancements
-- **🔇 Mute Button**: Handle noisy environments mid-build without stopping the workflow
-- **🔧 Matrix Tab**: Runtime provider registration UI (add AI models via voice/text)
-- **📊 Cloud Pricing Monitor**: View real-time GPU spot pricing
-- **🧹 Model Unloading**: Manually unload Whisper to free memory
-- **🔄 Provider Refresh**: Dynamic provider list updates
-- **ℹ️ About Tab**: Comprehensive feature documentation
+- **Memory Integration**: Seamless integration with orchestrator
+- **Interrupt Capability**: Voice-based interruption
+- **Mute Control**: Handle noisy environments
 
 ## Dependencies
 
-This client requires the [Universal Living Memory](https://github.com/brian95240/universal-living-memory) orchestrator to function.
+Requires [Universal Living Memory](https://github.com/brian95240/universal-living-memory) orchestrator.
 
 ## Quick Start
-
-### Windows (PowerShell)
-
-```powershell
-.\scripts\deploy-symbiotic.ps1
-```
-
-### Manual Setup
 
 ```bash
 # 1. Clone and start the core orchestrator
@@ -40,70 +35,121 @@ cd core
 python genesis.py
 docker compose up -d
 
-# 2. Wait for orchestrator to be ready
-curl http://localhost:8000/health
-
-# 3. Install studio dependencies
+# 2. Install studio dependencies
 cd ..
+git clone https://github.com/brian95240/genesis-studio.git
+cd genesis-studio
 pip install -r studio/requirements.txt
 
-# 4. Launch studio
+# 3. Launch studio
 python studio/genesis_studio.py
 ```
 
 ## Interface Overview
 
 ### 🚀 Create Tab
-- **Project Vision**: Describe your project in natural language
-- **AI Provider**: Select which AI provider to use (Grok, Anthropic, etc.)
-- **Initialize Swarm**: Start the multi-agent build process
-- **Mute/Unmute Voice**: Toggle voice input for noisy environments
-- **Swarm Log**: Real-time output from the agent workflow
+- **Project Vision**: Describe your project
+- **AI Provider**: Select provider
+- **Initialize Swarm**: Start multi-agent build
+- **Mute/Unmute Voice**: Toggle voice input
+- **Swarm Log**: Real-time output
 
-### 🔧 Matrix Tab (Configuration)
-- **Runtime Provider Registration**: Add new AI providers without restart
-  - Provider Name (e.g., "together", "mistral")
-  - Base URL (API endpoint)
-  - API Key (optional, can use environment variables)
-- **Cloud Spot Pricing**: Monitor cheapest GPU options across providers
-- **Unload Whisper**: Free memory by unloading the voice model
+### 🔌 Connections Tab (NEW!)
+Manage all three connection libraries with voice or manual input.
+
+#### 🔑 API Connections
+**Voice Command Example:**
+> *"Add API connection for Together AI at api.together.xyz with bearer token xyz123 supporting Mixtral model"*
+
+The AI will parse your command and confirm:
+- Connection ID: `together_ai`
+- Name: `Together AI`
+- Base URL: `https://api.together.xyz/v1`
+- Auth Type: `bearer`
+- Models: `mixtral-8x7b`
+
+**Manual Input Available:**
+- Connection ID
+- Name
+- Base URL
+- Auth Type (bearer, api_key, custom)
+- API Key
+- Models (comma-separated)
+
+#### 🪝 Webhooks
+**Voice Command Example:**
+> *"Add webhook for Zapier at hooks.zapier.com/xyz listening to completion and error events"*
+
+**Manual Input Available:**
+- Webhook ID
+- Name
+- URL
+- Method (POST, GET, PUT)
+- Events (comma-separated)
+
+#### 🔧 MCP Servers
+**Voice Command Example:**
+> *"Add MCP server for filesystem using npx with arguments filesystem and /tmp"*
+
+**Manual Input Available:**
+- Server ID
+- Name
+- Command
+- Arguments (comma-separated)
+
+### 🔧 Matrix Tab
+- **Cloud Spot Pricing**: Monitor GPU prices
+- **Unload Whisper**: Free memory
+- **System Health**: Check orchestrator status
 
 ### ℹ️ About Tab
 - Feature documentation
+- Voice command examples
 - Architecture overview
-- Keyboard shortcuts
-- Repository links
+- Version history
 
-## Usage Tips
+## Voice Command Examples
 
-### Voice Control
-1. Click "Initialize Swarm" to start
-2. Speak to interrupt the build process
-3. Use "Mute/Unmute" button in noisy environments
-4. Voice input automatically resumes when unmuted
+### Adding API Connections
+- *"Add OpenRouter API at openrouter.ai with my API key"*
+- *"Connect to Mistral AI API with bearer authentication"*
+- *"Add Together AI supporting Mixtral and Llama models"*
 
-### Adding Providers
-1. Go to Matrix tab
-2. Enter provider details:
-   - Name: `together`
-   - URL: `https://api.together.xyz/v1`
-   - Key: Your API key
-3. Click "Register Provider"
-4. Return to Create tab and refresh provider list
+### Adding Webhooks
+- *"Add Slack webhook at hooks.slack.com for all events"*
+- *"Connect Zapier webhook for completion events"*
+- *"Add n8n webhook with POST method"*
 
-### Monitoring Costs
-1. Go to Matrix tab
-2. Click "Check Markets"
-3. View real-time GPU spot pricing
-4. Compare providers and regions
+### Adding MCP Servers
+- *"Add filesystem MCP server for /home directory"*
+- *"Connect PostgreSQL MCP server"*
+- *"Add GitHub MCP server"*
+
+## Supported Services
+
+### AI Models
+- OpenAI, Anthropic, Google, Grok
+- Together AI, Mistral, Cohere
+- Replicate, OpenRouter
+- Any OpenAI-compatible API
+
+### Webhooks
+- Zapier, n8n, Make
+- IFTTT, Slack, Discord
+- Custom webhooks
+
+### MCP Servers
+- Filesystem, PostgreSQL, SQLite
+- GitHub, Google Drive
+- Custom MCP servers
 
 ## Architecture
 
 - **Gradio UI**: Web-based interface with tabs
-- **Faster-Whisper**: Local speech-to-text (GPU/CPU auto-detect)
+- **Faster-Whisper**: Local speech-to-text
+- **Voice Command Parser**: AI-powered connection parsing
+- **Connection Manager**: Add/remove/list connections
 - **Agentic Loop**: Architect → Engineer workflow
-- **HTTP Client**: Communicates with orchestrator API
-- **Dynamic Configuration**: Runtime provider management
 
 ## Environment Variables
 
@@ -121,34 +167,25 @@ STUDIO_PORT=7860
 - **RAM**: 4GB minimum (8GB+ for GPU)
 - **GPU**: Optional (CUDA for faster Whisper)
 - **Microphone**: Required for voice input
-- **Orchestrator**: Must be running and accessible
-
-## Keyboard Shortcuts
-
-- **Ctrl+Enter**: Start swarm (when in Vision field)
-- **Ctrl+M**: Toggle mute
+- **Orchestrator**: Must be running
 
 ## Troubleshooting
 
-### Voice Not Working
-1. Check microphone permissions
-2. Verify Whisper model loaded (check console)
-3. Try unmuting if muted
-4. Check audio input device settings
+### Voice Commands Not Parsing
+1. Speak clearly and include key details (name, URL, auth type)
+2. Review AI-parsed output before confirming
+3. Use manual input if voice parsing fails
+4. Check orchestrator connection
 
-### Orchestrator Connection Failed
-1. Verify orchestrator is running: `curl http://localhost:8000/health`
-2. Check `ORCHESTRATOR_URL` environment variable
-3. Ensure Docker containers are up: `docker ps`
-
-### Memory Issues
-1. Use "Unload Whisper" button in Matrix tab
-2. Close unused tabs
-3. Restart studio if needed
+### Connection Not Added
+1. Verify all required fields are filled
+2. Check URL format (include https://)
+3. Ensure API key is valid
+4. Review result JSON for error details
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## Security
 
@@ -164,16 +201,20 @@ AGPL-3.0 + Commercial (see [LICENSE](LICENSE))
 
 ## Changelog
 
+### v1.1.0 (Universal)
+- Added Universal Connection Management UI
+- Added voice-commanded connection additions
+- Added AI confirmation for connections
+- Added three connection library tabs (API, Webhook, MCP)
+- Added connection statistics dashboard
+- Enhanced UI organization
+
 ### v1.0.1 (Hyper-Dynamic)
 - Added mute button for noisy environments
 - Added Matrix tab for runtime configuration
 - Added cloud spot pricing monitor
-- Added Whisper model unloading
-- Added About tab with documentation
-- Enhanced UI with better organization
 
 ### v1.0.0 (Golden Master)
 - Initial release
 - Voice-guided project creation
 - Multi-agent workflow
-- Voice interrupt capability
