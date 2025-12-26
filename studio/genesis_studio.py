@@ -309,8 +309,8 @@ def toggle_mute():
     return status
 
 def launch():
-    with gr.Blocks(title="Vertex Genesis v1.1.0", theme=gr.themes.Monochrome()) as demo:
-        gr.Markdown("# 🧬 Vertex Genesis v1.1.0 - Universal Connection Framework")
+    with gr.Blocks(title="Vertex Genesis v1.1.1", theme=gr.themes.Monochrome()) as demo:
+        gr.Markdown("# 🧬 Vertex Genesis v1.1.1 - Universal Connection Framework")
         
         with gr.Tabs():
             # CREATE TAB
@@ -448,6 +448,132 @@ def launch():
                         remove_mcp_btn.click(remove_mcp_server, inputs=remove_mcp_id, outputs=mcp_result)
                         list_mcp_btn.click(lambda: requests.get(f"{ORCHESTRATOR}/v1/connections/mcp").json(), outputs=mcp_result)
             
+            # VAULT TAB (Vaultwarden & 2FA)
+            with gr.Tab("🔐 Vault"):
+                gr.Markdown("### Vaultwarden Credential Management")
+                gr.Markdown("Securely store and manage credentials with self-hosted Vaultwarden.")
+                
+                # Authentication
+                gr.Markdown("#### 🔑 Authentication")
+                with gr.Row():
+                    vault_email = gr.Textbox(label="Email", placeholder="user@example.com")
+                    vault_password = gr.Textbox(label="Master Password", type="password")
+                vault_auth_btn = gr.Button("🔐 Authenticate", variant="primary")
+                vault_auth_out = gr.JSON(label="Auth Status")
+                
+                def vault_auth(email, password):
+                    try:
+                        resp = requests.post(f"{ORCHESTRATOR}/v1/vault/auth", json={"email": email, "master_password": password})
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                vault_auth_btn.click(vault_auth, inputs=[vault_email, vault_password], outputs=vault_auth_out)
+                
+                gr.Markdown("---")
+                
+                # Create Cipher
+                gr.Markdown("#### ➕ Create Credential")
+                with gr.Row():
+                    cipher_name = gr.Textbox(label="Name", placeholder="My API Key")
+                    cipher_username = gr.Textbox(label="Username/Email", placeholder="user@example.com")
+                with gr.Row():
+                    cipher_password = gr.Textbox(label="Password (leave empty to auto-generate)", type="password", placeholder="")
+                    cipher_uri = gr.Textbox(label="URL (optional)", placeholder="https://api.example.com")
+                cipher_notes = gr.Textbox(label="Notes (optional)", placeholder="Additional information...")
+                cipher_auto_gen = gr.Checkbox(label="Auto-generate password", value=True)
+                
+                create_cipher_btn = gr.Button("💾 Save to Vault", variant="primary")
+                cipher_result = gr.JSON(label="Result")
+                
+                def create_cipher(name, username, password, uri, notes, auto_gen):
+                    try:
+                        resp = requests.post(f"{ORCHESTRATOR}/v1/vault/cipher", json={
+                            "name": name,
+                            "username": username,
+                            "password": password if password else None,
+                            "uri": uri if uri else None,
+                            "notes": notes if notes else None,
+                            "auto_generate_password": auto_gen
+                        })
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                create_cipher_btn.click(create_cipher, inputs=[cipher_name, cipher_username, cipher_password, cipher_uri, cipher_notes, cipher_auto_gen], outputs=cipher_result)
+                
+                gr.Markdown("---")
+                
+                # Password Generator
+                gr.Markdown("#### 🎲 Password Generator")
+                with gr.Row():
+                    pwd_length = gr.Slider(16, 64, value=32, step=1, label="Length")
+                    pwd_symbols = gr.Checkbox(label="Include symbols", value=True)
+                gen_pwd_btn = gr.Button("🔑 Generate Password", variant="secondary")
+                pwd_out = gr.Textbox(label="Generated Password", interactive=False)
+                
+                def gen_password(length, symbols):
+                    try:
+                        resp = requests.post(f"{ORCHESTRATOR}/v1/vault/generate-password?length={int(length)}&include_symbols={symbols}")
+                        return resp.json().get("password", "")
+                    except Exception as e:
+                        return f"Error: {e}"
+                
+                gen_pwd_btn.click(gen_password, inputs=[pwd_length, pwd_symbols], outputs=pwd_out)
+                
+                gr.Markdown("---")
+                
+                # 2FA Generator
+                gr.Markdown("#### 🔐 2FA/TOTP Generator")
+                gr.Markdown("Generate 2FA secrets for use with authenticator apps (Google Authenticator, Authy, etc.)")
+                
+                with gr.Row():
+                    totp_account = gr.Textbox(label="Account Name", placeholder="user@example.com")
+                    totp_issuer = gr.Textbox(label="Issuer", value="Vertex Genesis")
+                gen_2fa_btn = gr.Button("🔐 Generate 2FA Secret", variant="secondary")
+                totp_out = gr.JSON(label="2FA Details")
+                
+                def gen_2fa(account, issuer):
+                    try:
+                        resp = requests.post(f"{ORCHESTRATOR}/v1/vault/generate-2fa?account_name={account}&issuer={issuer}")
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                gen_2fa_btn.click(gen_2fa, inputs=[totp_account, totp_issuer], outputs=totp_out)
+                
+                gr.Markdown("---")
+                
+                # List & Search
+                gr.Markdown("#### 📋 Manage Credentials")
+                with gr.Row():
+                    list_ciphers_btn = gr.Button("📋 List All", variant="secondary")
+                    search_query = gr.Textbox(label="Search", placeholder="Search by name or username...")
+                    search_btn = gr.Button("🔍 Search", variant="secondary")
+                
+                ciphers_out = gr.JSON(label="Credentials")
+                
+                def list_ciphers():
+                    try:
+                        resp = requests.get(f"{ORCHESTRATOR}/v1/vault/ciphers")
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                def search_ciphers(query):
+                    try:
+                        resp = requests.get(f"{ORCHESTRATOR}/v1/vault/search?q={query}")
+                        return resp.json()
+                    except Exception as e:
+                        return {"error": str(e)}
+                
+                list_ciphers_btn.click(list_ciphers, outputs=ciphers_out)
+                search_btn.click(search_ciphers, inputs=search_query, outputs=ciphers_out)
+                
+                gr.Markdown("---")
+                gr.Markdown("**Access Vaultwarden UI**: http://localhost:8081")
+                gr.Markdown("**Access 2FAuth UI**: http://localhost:5000")
+            
             # MATRIX TAB (Cloud Pricing & System)
             with gr.Tab("🔧 Matrix"):
                 gr.Markdown("### Cloud Spot Pricing (Delta Engine)")
@@ -472,9 +598,9 @@ def launch():
             # ABOUT TAB
             with gr.Tab("ℹ️ About"):
                 gr.Markdown("""
-                ## Vertex Genesis v1.1.0 - Universal Connection Framework
+                ## Vertex Genesis v1.1.1 - Universal Connection Framework
                 
-                ### 🌟 New in v1.1.0
+                ### 🌟 New in v1.1.1
                 - **Universal Connection Library**: Three symbiotic libraries (API, Webhook, MCP)
                 - **Voice-Commanded Connections**: Add any service via voice with AI confirmation
                 - **Future-Proof Architecture**: Connect to ANY AI model, tool, or platform
@@ -529,7 +655,7 @@ def launch():
                 - [Genesis Studio](https://github.com/brian95240/genesis-studio)
                 
                 ### Version History
-                - **v1.1.0**: Universal Connection Framework
+                - **v1.1.1**: Universal Connection Framework
                 - **v1.0.1**: Hyper-Dynamic capabilities
                 - **v1.0.0**: Golden Master release
                 """)
@@ -537,6 +663,6 @@ def launch():
     demo.queue().launch(server_port=int(os.getenv("STUDIO_PORT", "7860")))
 
 if __name__ == "__main__":
-    print("[GENESIS STUDIO v1.1.0] Starting Universal Connection Framework...")
+    print("[GENESIS STUDIO v1.1.1] Starting Universal Connection Framework...")
     print(f"[INFO] Orchestrator: {ORCHESTRATOR}")
     launch()
