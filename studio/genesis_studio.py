@@ -309,8 +309,8 @@ def toggle_mute():
     return status
 
 def launch():
-    with gr.Blocks(title="Vertex Genesis v1.2.0", theme=gr.themes.Monochrome()) as demo:
-        gr.Markdown("# 🧬 Vertex Genesis v1.2.0 - Ghost Mode Evolution")
+    with gr.Blocks(title="Vertex Genesis v1.4.0", theme=gr.themes.Monochrome()) as demo:
+        gr.Markdown("# 🧬 Vertex Genesis v1.4.0 - Ghost Mode Evolution")
         
         with gr.Tabs():
             # CREATE TAB
@@ -763,9 +763,9 @@ def launch():
             # ABOUT TAB
             with gr.Tab("ℹ️ About"):
                 gr.Markdown("""
-                ## Vertex Genesis v1.3.0 - Autonomous Ghost Mode
+                ## Vertex Genesis v1.4.0 - Autonomous Ghost Mode
                 
-                ### 🌟 New in v1.3.0
+                ### 🌟 New in v1.4.0
                 - **🤖 Real-Time HuggingFace Indexing**: Dynamic model addition from HF API
                 - **📷 Context-Aware Camera**: Automatically selects optimal model for use case
                 - **💰 $0-Cost Optimization**: Intelligent decision engine ensures free options
@@ -773,7 +773,7 @@ def launch():
                 - **🔗 Vault-Connection Integration**: Auto-store API keys in Vaultwarden
                 - **📊 Graph Synergy Analysis**: 66.7% efficiency boost through compounding synergies
                 
-                ### 🎉 Inherited from v1.2.0
+                ### 🎉 Inherited from v1.4.0
                 - **👻 Ghost Mode**: Voice-activated agent system with ambient wake-word detection
                 - **🪑 Seat Router**: Vector-driven model assignment using embeddings
                 - **🔍 Model Discovery**: Universal model hunting with spot pricing
@@ -835,8 +835,8 @@ def launch():
                 - [Genesis Studio](https://github.com/brian95240/genesis-studio)
                 
                 ### Version History
-                - **v1.3.0**: Autonomous Ghost Mode (Real-time HF indexing, Context camera, $0-cost optimization)
-                - **v1.2.0**: Ghost Mode Evolution (Seat Router, Model Discovery, Voice Activation)
+                - **v1.4.0**: Autonomous Ghost Mode (Real-time HF indexing, Context camera, $0-cost optimization)
+                - **v1.4.0**: Ghost Mode Evolution (Seat Router, Model Discovery, Voice Activation)
                 - **v1.1.1**: Universal Connection Framework (API/Webhook/MCP Libraries)
                 - **v1.1.0**: Security Vault Integration (Vaultwarden + 2FAuth)
                 - **v1.0.1**: Hyper-Dynamic capabilities
@@ -846,6 +846,6 @@ def launch():
     demo.queue().launch(server_port=int(os.getenv("STUDIO_PORT", "7860")))
 
 if __name__ == "__main__":
-    print("[GENESIS STUDIO v1.3.0] Starting Autonomous Ghost Mode...")
+    print("[GENESIS STUDIO v1.4.0] Starting Autonomous Ghost Mode...")
     print(f"[INFO] Orchestrator: {ORCHESTRATOR}")
     launch()
